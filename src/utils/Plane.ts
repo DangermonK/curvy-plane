@@ -29,7 +29,7 @@ export class Movable {
 	}
 
 	update() {
-		this._angularVelocity += (this._angularAcceleration - this._angularVelocity) * 0.2;
+		this._angularVelocity += (this._angularAcceleration - this._angularVelocity) * 15 * Timer.deltaTime;
 		this._angle += this._angularVelocity * this._angularSpeed * Timer.deltaTime;	// todo: add delta time
 		this._velocity.copy = new Vector(Math.cos(this._angle * Math.PI / 180), Math.sin(this._angle * Math.PI / 180)).normalized;
 
