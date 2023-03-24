@@ -12,7 +12,7 @@ let current = 0;
 function genCloud(arr: Array<IVector>) {
 	const vArr = [];
 	for(const v of arr) {
-		vArr.push(new Vector(v.x + 300, v.y));
+		vArr.push(new Vector(v.x + 400, v.y + 100));
 	}
 	return vArr;
 }
