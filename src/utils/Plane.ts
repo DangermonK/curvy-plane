@@ -4,9 +4,12 @@ import { Timer } from "./Timer";
 export class Movable {
 
 	private readonly _position: Vector;
-	private readonly _velocity: Vector;
+	private readonly _direction: Vector;
 
-	private _speed: number;
+	private readonly _speed: number;
+	private _velocity: number = 0;
+	private _acceleration: number = 0;
+	private _accelerationDamper: number = 0;
 	private readonly _angularSpeed: number;
 
 	private _angle: number = 0;
@@ -15,7 +18,7 @@ export class Movable {
 
 	constructor(x = 0, y = 0, speed = 2, angularSpeed = 1) {
 		this._position = new Vector(x, y);
-		this._velocity = new Vector(0, 0).normalized;
+		this._direction = new Vector(0, 0).normalized;
 		this._speed = speed;
 		this._angularSpeed = angularSpeed;
 	}
@@ -24,16 +27,18 @@ export class Movable {
 		this._angularAcceleration = v;
 	}
 
-	setSpeed(v: number): void {
-		this._speed = v;
+	setAcceleration(v: number): void {
+		this._accelerationDamper = v;
 	}
 
 	update() {
 		this._angularVelocity += (this._angularAcceleration - this._angularVelocity) * 15 * Timer.deltaTime;
-		this._angle += this._angularVelocity * this._angularSpeed * Timer.deltaTime;	// todo: add delta time
-		this._velocity.copy = new Vector(Math.cos(this._angle * Math.PI / 180), Math.sin(this._angle * Math.PI / 180)).normalized;
+		this._angle += this._angularVelocity * this._angularSpeed * Timer.deltaTime;
+		this._direction.copy = new Vector(Math.cos(this._angle * Math.PI / 180), Math.sin(this._angle * Math.PI / 180)).normalized;
 
-		this._position.add(this._velocity.x * this._speed * Timer.deltaTime, this._velocity.y * this._speed * Timer.deltaTime);	// todo: add delta time
+		this._acceleration += (this._accelerationDamper - this._acceleration) * 15 * Timer.deltaTime;
+		this._velocity = this._speed + this._acceleration;
+		this._position.add(this._direction.x * this._velocity * Timer.deltaTime, this._direction.y * this._velocity * Timer.deltaTime);
 	}
 
 	get position(): Vector {
@@ -82,6 +87,12 @@ export class Plane extends Movable {
 			case 'ArrowRight':
 				this.setAngularVelocity(1);
 				break;
+			case 'ArrowUp':
+				this.setAcceleration(60);
+				break;
+			case 'ArrowDown':
+				this.setAcceleration(-40);
+				break;
 		}
 	}
 
@@ -92,6 +103,12 @@ export class Plane extends Movable {
 				break;
 			case 'ArrowRight':
 				this.setAngularVelocity(0);
+				break;
+			case 'ArrowUp':
+				this.setAcceleration(0);
+				break;
+			case 'ArrowDown':
+				this.setAcceleration(0);
 				break;
 		}
 	}

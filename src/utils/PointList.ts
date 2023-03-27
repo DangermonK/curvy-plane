@@ -23,6 +23,7 @@ export class SVGRenderer {
 		this._points = points.map(p => p.x + ',' + p.y);
 
 		this._svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+		this._svgElement.classList.add('cp-svg');
 
 		const startLine = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
 		startLine.classList.add('dashed');

@@ -2,13 +2,19 @@
 
 import { Plane } from "./utils/Plane";
 import { IVector, Vector } from "./utils/Vector";
-import { IPoint, PointList, SVGRenderer } from "./utils/PointList";
+import { PointList } from "./utils/PointList";
+import { style } from "./utils/Style";
 import { data } from "./utils/Data";
 import { Timer } from "./utils/Timer";
 
+document.head.innerHTML += style;
 
-let pCloud = new PointList(genCloud(data[0]));
+
 let current = 0;
+let pCloud = new PointList(genCloud(data[current]));
+
+const plane = new Plane();
+
 function genCloud(arr: Array<IVector>) {
 	const vArr = [];
 	for(const v of arr) {
@@ -16,10 +22,6 @@ function genCloud(arr: Array<IVector>) {
 	}
 	return vArr;
 }
-
-const plane = new Plane();
-
-
 
 function update() {
 	Timer.tick();
