@@ -91,6 +91,8 @@ export class PointList {
 	private _svgRenderer: SVGRenderer;
 
 	constructor(list: Array<Vector>) {
+		list = this.averageVectorArray(list);
+
 		this._list = list.map(v => {
 			return {
 				hit: false,
@@ -99,6 +101,28 @@ export class PointList {
 		});
 
 		this._svgRenderer = new SVGRenderer(list);
+	}
+
+	averageVectorArray(arr: Array<IVector>): Array<Vector> {
+
+		const hSpan = {min: Infinity, max: 0, len: 0};
+		const vSpan = {min: Infinity, max: 0, len: 0};
+
+		arr.forEach(value => {
+			if(value.x < hSpan.min) hSpan.min = value.x;
+			if(value.y < vSpan.min) vSpan.min = value.y;
+
+			if(value.x > hSpan.max) hSpan.max = value.x;
+			if(value.y > vSpan.max) vSpan.max = value.y;
+		});
+		hSpan.len = hSpan.max - hSpan.min;
+		vSpan.len = vSpan.max - vSpan.min;
+
+		const vArr = [];
+		for(const v of arr) {
+			vArr.push(new Vector(v.x - hSpan.min + (window.innerWidth - hSpan.len) * 0.5, v.y - vSpan.min + (window.innerHeight - vSpan.len) * 0.5));
+		}
+		return vArr;
 	}
 
 	remove() {

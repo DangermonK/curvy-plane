@@ -1,5 +1,5 @@
 
-export const data = [
+export const data: Array<any> = [
 	[
 		{
 			"x": 150,

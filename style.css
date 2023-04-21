@@ -1,0 +1,69 @@
+body, html {
+    overflow: hidden;
+}
+.plane {
+    position: fixed;
+    z-index: 1000001;
+    pointer-events: none;
+}
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+use.key {
+    fill: none;
+}
+.key-svg {
+    animation: fadeIn 1s;
+    pointer-events: none;
+    position: fixed;
+    z-index: 100000;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.cp-svg {
+    animation: fadeIn 1s;
+    transition: 5s;
+    opacity: 1;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 1000000;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+.cp-svg polyline {
+    stroke: #a6a7a6;
+    fill: none;
+}
+.c-error-wrapper {
+    opacity: 0;
+    transition: 1s;
+}
+.cp-svg polyline.stroke {
+    stroke-width: 3px;
+    stroke: #c06;
+    stroke-linecap: round;
+}
+.cp-svg polyline.stroke.failed {
+    stroke: #f00;
+    stroke-width: 6px;
+}
+.cp-svg polyline.stroke.win {
+    stroke: #ffcc17;
+    transition: 0.5s;
+}
+.cp-svg polyline.dashed {
+    stroke-dasharray: 10 10;
+    stroke-width: 2px;
+}
+.fade-out {
+    opacity: 0;
+    transition-delay: .6s;
+    transition: 0.4s;
+}
+.blur {
+    filter: blur(5px);
+}

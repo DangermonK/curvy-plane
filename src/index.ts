@@ -1,52 +1,114 @@
 
 
 import { Plane } from "./utils/Plane";
-import { IVector, Vector } from "./utils/Vector";
 import { PointList } from "./utils/PointList";
-import { style } from "./utils/Style";
 import { data } from "./utils/Data";
 import { Timer } from "./utils/Timer";
+import { Vector } from "./utils/Vector";
+import "../style.css";
 
-document.head.innerHTML += style;
+const keyIcon = require('../keys.svg');
 
-let current = 0;
-let pCloud = new PointList(genCloud(data[current]));
+class Game {
 
-const plane = new Plane();
+	private plane: Plane;
+	private line: PointList;
+	private currentLine: number = 0;
+	private data: Array<Array<Vector>>;
 
-function genCloud(arr: Array<IVector>) {
+	private updateFallback: Function;
 
-	const hSpan = {min: Infinity, max: 0, len: 0};
-	const vSpan = {min: Infinity, max: 0, len: 0};
+	private tutorialIcon: any = null;
 
-	arr.forEach(value => {
-		if(value.x < hSpan.min) hSpan.min = value.x;
-		if(value.y < vSpan.min) vSpan.min = value.y;
-
-		if(value.x > hSpan.max) hSpan.max = value.x;
-		if(value.y > vSpan.max) vSpan.max = value.y;
-	});
-	hSpan.len = hSpan.max - hSpan.min;
-	vSpan.len = vSpan.max - vSpan.min;
-
-	const vArr = [];
-	for(const v of arr) {
-		vArr.push(new Vector(v.x - hSpan.min + (window.innerWidth - hSpan.len) * 0.5, v.y - vSpan.min + (window.innerHeight - vSpan.len) * 0.5));
+	private tutorial = {
+		up: false,
+		down: false,
+		left: false,
+		right: false
 	}
-	return vArr;
+
+	constructor(data: Array<Array<Vector>>) {
+
+		this.plane = new Plane();
+		this.data = data;
+
+	}
+
+	start() {
+
+		this.tutorialIcon = document.createElement('img');
+		this.tutorialIcon.src = keyIcon;
+		this.tutorialIcon.classList.add('key-svg');
+		document.body.appendChild(this.tutorialIcon);
+
+		window.addEventListener('keyup', this.trackUpKey.bind(this));
+
+		this.updateFallback = this.introUpdate;
+
+		requestAnimationFrame(this.update.bind(this));
+	}
+
+	trackUpKey(event: KeyboardEvent) {
+		switch (event.code) {
+			case 'ArrowLeft':
+				this.tutorial.left = true;
+				break;
+			case 'ArrowRight':
+				this.tutorial.right = true;
+				break;
+			case 'ArrowUp':
+				this.tutorial.up = true;
+				break;
+			case 'ArrowDown':
+				this.tutorial.down = true;
+				break;
+		}
+	}
+
+	gameUpdate() {
+		this.line.checkCollision(this.plane.position, 25, () => {
+			this.line.remove();
+			this.currentLine = (this.currentLine+1) % this.data.length;
+			this.line = new PointList(this.data[this.currentLine]);
+		});
+	}
+
+	emptyUpdate() {
+
+	}
+
+	introUpdate() {
+
+		if(this.tutorial.left && this.tutorial.right && this.tutorial.up && this.tutorial.down) {
+			setTimeout(() => {
+				this.line = new PointList(this.data[this.currentLine]);
+				this.updateFallback = this.gameUpdate;
+				this.tutorialIcon.remove();
+			}, 2000);
+			this.updateFallback = this.emptyUpdate;
+			setTimeout(() => {this.tutorialIcon.classList.add('fade-out');}, 1000);
+		}
+
+	}
+
+	update() {
+		Timer.tick();
+		this.plane.update();
+
+		this.updateFallback();
+
+		requestAnimationFrame(this.update.bind(this));
+	}
+
 }
 
-function update() {
-	Timer.tick();
-	plane.update();
-
-	pCloud.checkCollision(plane.position, 25, () => {
-		pCloud.remove();
-		current = (current+1) % data.length;
-		pCloud = new PointList(genCloud(data[current]));
-	});
-
-	requestAnimationFrame(update);
+function startGame() {
+	window.scrollTo({top: 0, behavior: 'smooth'});
+	setTimeout(() => {
+		const game = new Game(data);
+		game.start()
+	}, 1000);
 }
-requestAnimationFrame(update);
 
+if(!('ontouchstart' in window))
+	setTimeout(startGame, 1000);

@@ -1,6 +1,8 @@
 import { IVector, Vector } from "./Vector";
 import { Timer } from "./Timer";
 
+const planeIcon = require('../../plane.svg');
+
 export class Movable {
 
 	private readonly _position: Vector;
@@ -53,8 +55,8 @@ export class Movable {
 
 export class Plane extends Movable {
 
-	private readonly _element: HTMLElement;
-	private readonly _shadow: HTMLElement;
+	private readonly _element: HTMLImageElement;
+	private readonly _shadow: HTMLImageElement;
 
 	private _altitude: number = 40;
 	private _radius: number = 20;
@@ -64,10 +66,12 @@ export class Plane extends Movable {
 	constructor() {
 		super(window.innerWidth * 0.5, window.innerHeight * 0.5, 150, 100);
 
-		this._element = document.createElement('div');
+		this._element = document.createElement('img');
+		this._element.src = planeIcon;
 		this._element.classList.add('plane');
 
-		this._shadow = document.createElement('div');
+		this._shadow = document.createElement('img');
+		this._shadow.src = planeIcon;
 		this._shadow.classList.add('plane', 'blur');
 
 		document.body.appendChild(this._shadow);
