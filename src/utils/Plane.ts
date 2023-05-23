@@ -100,6 +100,11 @@ export class Plane extends Movable {
 		}
 	}
 
+	remove() {
+		this._element.remove();
+		this._shadow.remove();
+	}
+
 	private handleKeyUp(event: KeyboardEvent) {
 		switch (event.code) {
 			case 'ArrowLeft':

@@ -7,13 +7,14 @@ export interface IPoint {
 
 export class SVGRenderer {
 
-	private readonly _svgElement: SVGElement;
-	private readonly _svgPolylineElement: SVGPolylineElement;
-	private readonly _dashedSvgPolylineElement: SVGPolylineElement;
+	private readonly _svgElement: HTMLElement;
+	private readonly _svgPolylineElement: HTMLElement;
+	private readonly _dashedSvgPolylineElement: HTMLElement;
 
 	private readonly _points: Array<string>;
 
 	constructor(points: Array<IVector>) {
+
 
 		const startVector = Vector.subtract(new Vector(points[0].x, points[0].y), new Vector(points[1].x, points[1].y)).normalized;
 		const scale = 5;
@@ -22,25 +23,28 @@ export class SVGRenderer {
 
 		this._points = points.map(p => p.x + ',' + p.y);
 
-		this._svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+		this._svgElement = document.getElementById('cp-svg');//document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+		this._svgElement.classList.remove('fade-out');
 		this._svgElement.classList.add('cp-svg');
 
-		const startLine = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-		startLine.classList.add('dashed');
+		const startLine = document.getElementById('start');//document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+		//startLine.classList.add('dashed');
 		startLine.setAttribute('points', p1 + ' ' + p2);
 
-		this._svgPolylineElement = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-		this._svgPolylineElement.classList.add('stroke');
+		this._svgPolylineElement = document.getElementById('stroke');//document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+		//this._svgPolylineElement.classList.add('stroke');
+		this._svgPolylineElement.setAttribute('points', '');
+		this._svgPolylineElement.classList.remove('win', 'failed', 'fade-out');
 
-		this._dashedSvgPolylineElement = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-		this._dashedSvgPolylineElement.classList.add('dashed');
+		this._dashedSvgPolylineElement = document.getElementById('line');//document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+		//this._dashedSvgPolylineElement.classList.add('dashed');
 		this._dashedSvgPolylineElement.setAttribute('points', this.getPointString());
 
-		this._svgElement.appendChild(this._dashedSvgPolylineElement);
-		this._svgElement.appendChild(this._svgPolylineElement);
-		this._svgElement.appendChild(startLine);
+		//this._svgElement.appendChild(this._dashedSvgPolylineElement);
+		//this._svgElement.appendChild(this._svgPolylineElement);
+		//this._svgElement.appendChild(startLine);
 
-		document.body.appendChild(this._svgElement);
+		//document.getElementsByClassName('c-error-wrapper')[0].insertAdjacentElement('afterbegin', this._svgElement);
 
 	}
 
@@ -120,7 +124,7 @@ export class PointList {
 
 		const vArr = [];
 		for(const v of arr) {
-			vArr.push(new Vector(v.x - hSpan.min + (window.innerWidth - hSpan.len) * 0.5, v.y - vSpan.min + (window.innerHeight - vSpan.len) * 0.5));
+			vArr.push(new Vector(v.x - hSpan.min + (window.innerWidth - hSpan.len) * 0.5, v.y - vSpan.min + (window.innerHeight - vSpan.len) * 0.5 + 25));
 		}
 		return vArr;
 	}

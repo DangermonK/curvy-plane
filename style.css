@@ -1,6 +1,4 @@
-body, html {
-    overflow: hidden;
-}
+
 .plane {
     position: fixed;
     z-index: 1000001;
@@ -38,7 +36,7 @@ use.key {
     stroke: #a6a7a6;
     fill: none;
 }
-.c-error-wrapper {
+.cp-fade-out {
     opacity: 0;
     transition: 1s;
 }

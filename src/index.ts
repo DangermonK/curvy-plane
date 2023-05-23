@@ -48,6 +48,14 @@ class Game {
 		requestAnimationFrame(this.update.bind(this));
 	}
 
+	stop() {
+		document.body.style.overflow = null;
+		document.getElementsByClassName('c-notfound')[0]?.classList.remove('cp-fade-out');
+		this.line.remove();
+		this.plane.remove();
+		this.update = () => {};
+	}
+
 	trackUpKey(event: KeyboardEvent) {
 		switch (event.code) {
 			case 'ArrowLeft':
@@ -67,7 +75,6 @@ class Game {
 
 	gameUpdate() {
 		this.line.checkCollision(this.plane.position, 25, () => {
-			this.line.remove();
 			this.currentLine = (this.currentLine+1) % this.data.length;
 			this.line = new PointList(this.data[this.currentLine]);
 		});
@@ -103,6 +110,8 @@ class Game {
 }
 
 function startGame() {
+	document.body.style.overflow = 'hidden';
+	document.getElementsByClassName('c-notfound')[0]?.classList.add('cp-fade-out');
 	window.scrollTo({top: 0, behavior: 'smooth'});
 	setTimeout(() => {
 		const game = new Game(data);
@@ -111,4 +120,4 @@ function startGame() {
 }
 
 if(!('ontouchstart' in window))
-	setTimeout(startGame, 1000);
+	setTimeout(startGame, 1000 );
