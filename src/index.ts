@@ -117,9 +117,5 @@ class Game {
 
 }
 
-function startGame() {
-	const game = new Game(data);
-}
-
 if(!('ontouchstart' in window))
-	setTimeout(startGame, 1000 );
+	new Game(data);
