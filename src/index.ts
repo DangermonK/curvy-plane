@@ -32,27 +32,35 @@ class Game {
 		this.plane = new Plane();
 		this.data = data;
 
+		this.plane.setClickListener(this.start.bind(this));
 	}
 
 	start() {
+		document.body.style.overflow = 'hidden';
+		document.getElementsByClassName('c-notfound')[0]?.classList.add('cp-fade-out');
+		window.scrollTo({top: 0, behavior: 'smooth'});
 
-		this.tutorialIcon = document.createElement('img');
-		this.tutorialIcon.src = keyIcon;
-		this.tutorialIcon.classList.add('key-svg');
-		document.body.appendChild(this.tutorialIcon);
+		setTimeout(() => {
+			this.tutorialIcon = document.createElement('img');
+			this.tutorialIcon.src = keyIcon;
+			this.tutorialIcon.classList.add('key-svg', 'cp-element');
+			document.body.appendChild(this.tutorialIcon);
 
-		window.addEventListener('keyup', this.trackUpKey.bind(this));
+			window.addEventListener('keyup', this.trackUpKey.bind(this));
+			this.plane.setClickListener(this.stop.bind(this));
 
-		this.updateFallback = this.introUpdate;
+			this.updateFallback = this.introUpdate;
 
-		requestAnimationFrame(this.update.bind(this));
+			requestAnimationFrame(this.update.bind(this));
+		}, 1000);
 	}
 
 	stop() {
 		document.body.style.overflow = null;
 		document.getElementsByClassName('c-notfound')[0]?.classList.remove('cp-fade-out');
-		this.line.remove();
-		this.plane.remove();
+		for(const el of Array.from(document.getElementsByClassName('cp-element'))) {
+			el.remove();
+		}
 		this.update = () => {};
 	}
 
@@ -74,7 +82,7 @@ class Game {
 	}
 
 	gameUpdate() {
-		this.line.checkCollision(this.plane.position, 25, () => {
+		this.line.checkCollision(this.plane.position, 30, () => {
 			this.currentLine = (this.currentLine+1) % this.data.length;
 			this.line = new PointList(this.data[this.currentLine]);
 		});
@@ -110,13 +118,7 @@ class Game {
 }
 
 function startGame() {
-	document.body.style.overflow = 'hidden';
-	document.getElementsByClassName('c-notfound')[0]?.classList.add('cp-fade-out');
-	window.scrollTo({top: 0, behavior: 'smooth'});
-	setTimeout(() => {
-		const game = new Game(data);
-		game.start()
-	}, 1000);
+	const game = new Game(data);
 }
 
 if(!('ontouchstart' in window))

@@ -72,10 +72,6 @@ export class SVGRenderer {
 		});
 	}
 
-	remove() {
-		this._svgElement.remove();
-	}
-
 	interpolateLine(to: number): void {
 		this._svgPolylineElement.setAttribute('points', this.getPointString(to));
 	}
@@ -129,10 +125,6 @@ export class PointList {
 		return vArr;
 	}
 
-	remove() {
-		this._svgRenderer.remove();
-	}
-
 	reset() {
 		this._solved = false;
 		this._current = 0;
@@ -153,16 +145,22 @@ export class PointList {
 		if(this.checkIntersectionAt(this._current, vector, radius)) {
 			this._list[this._current].hit = true;
 
-			if(this._current < this._list.length - 1) {
-				if (this.checkIntersectionAt(this._current + 1, vector, radius)) {
-					this._current++;
-					this._svgRenderer.interpolateLine(this._current+1);
+			while(true) {
+				if (this._current < this._list.length - 1) {
+					if (this.checkIntersectionAt(this._current + 1, vector, radius)) {
+						this._current++;
+						this._list[this._current].hit = true;
+						this._svgRenderer.interpolateLine(this._current + 1);
+					} else {
+						break;
+					}
+				} else {
+					this._solved = true;
+					this._svgRenderer.wonTrack().then(() => {
+						win();
+					});
+					break;
 				}
-			} else {
-				this._solved = true;
-				this._svgRenderer.wonTrack().then(() => {
-					win();
-				});
 			}
 		} else if(this._list[0].hit) {
 			this._solved = true;

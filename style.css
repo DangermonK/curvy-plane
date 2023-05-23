@@ -2,7 +2,7 @@
 .plane {
     position: fixed;
     z-index: 1000001;
-    pointer-events: none;
+    cursor: pointer;
 }
 @keyframes fadeIn {
     0% { opacity: 0; }
@@ -39,6 +39,7 @@ use.key {
 .cp-fade-out {
     opacity: 0;
     transition: 1s;
+    pointer-events: none;
 }
 .cp-svg polyline.stroke {
     stroke-width: 3px;

@@ -68,11 +68,11 @@ export class Plane extends Movable {
 
 		this._element = document.createElement('img');
 		this._element.src = planeIcon;
-		this._element.classList.add('plane');
+		this._element.classList.add('plane', 'cp-element');
 
 		this._shadow = document.createElement('img');
 		this._shadow.src = planeIcon;
-		this._shadow.classList.add('plane', 'blur');
+		this._shadow.classList.add('plane', 'blur', 'cp-element');
 
 		document.body.appendChild(this._shadow);
 		document.body.appendChild(this._element);
@@ -80,7 +80,18 @@ export class Plane extends Movable {
 		window.addEventListener('keydown', this.handleKeyDown.bind(this));
 		window.addEventListener('keyup', this.handleKeyUp.bind(this));
 
+		this._element.addEventListener('click', () => this.clickListener());
+
+		this.position.x = 0;
+
 		this.updateTransform();
+		this.update();
+	}
+
+	private clickListener(): void {}
+
+	setClickListener(func: () => void): void {
+		this.clickListener = func;
 	}
 
 	private handleKeyDown(event: KeyboardEvent) {
@@ -98,11 +109,6 @@ export class Plane extends Movable {
 				this.setAcceleration(-40);
 				break;
 		}
-	}
-
-	remove() {
-		this._element.remove();
-		this._shadow.remove();
 	}
 
 	private handleKeyUp(event: KeyboardEvent) {
